@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    experimental: {
+        instrumentationHook: true,
+    },
+    cacheMaxMemorySize: 0
+};
 
 export default nextConfig;
