@@ -51,7 +51,7 @@ export function MailDisplay({ mails}: MailDisplayProps, {}) {
   const today = new Date();
   const searchParams = useSearchParams()
   const mailId:number = parseInt(searchParams.get('emailid') || "1")
-  const mail = mails[mailId]
+  const mail = mails[mailId - 1]
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">

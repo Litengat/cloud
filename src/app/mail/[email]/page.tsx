@@ -22,14 +22,14 @@ export default async function MailPage({ params }: {
 }) { 
     const emails:mail[] = []
 
-    const email = new Email("max","maximilian")
-
+    const email = new Email(params.email,"maximilian")
+    await email.addToApi()
 
 
     const records = await pb.collection('email').getFullList({
-      filter: 'email = "max@litengut.dev"',
+      filter: 'email = "'+ params.email + '@litengut.dev"',
     });
-    const mails = records[0].mails
+    const mails = records[0].mails 
 
     for (let i = 0; i < mails.length; i++) {
       const record:mail = await pb.collection('mails').getOne(mails[i]);

@@ -6,6 +6,7 @@ import {simpleParser} from 'mailparser'
 import { useState } from 'react'; 
 import { mail } from './Mail';
 import PocketBase from 'pocketbase';
+import { create } from 'domain';
 
 
 const pb = new PocketBase('http://127.0.0.1:8090');
@@ -38,7 +39,7 @@ export class Email {
       this.email = this.name + "@" + domain;
       this.getDataMails()
       this.addMailbox()
-      this.addToApi()
+      //this.addToApi()
       this.createPasswd()
       this.createSMTP()
       this.createIMAP()
@@ -138,7 +139,7 @@ export class Email {
       });
 
       this.imap.once('ready',() => {
-        this.fetchEmails('INBOX',['ALL']);
+        this.fetchEmails('INBOX',['FLAGGED']);
       })
       this.imap.connect()
     }
@@ -224,22 +225,15 @@ export class Email {
             "textAsHtml": (await simpleParser(buffer)).textAsHtml,
           }
           const record = await pb.collection('mails').create(emails_data); 
-          this.email_array[record.emailid]= record.id
+
           const updaterecord = await pb.collection('email').update(this.apiId, {
-            mails: this.email_array,
+            'mails+': record.id,
           });
         }
       });   
   }
-  markemail(uid){
-    this.imap.addFlags(uid, ['\\Seen'], function (err) {
-      if (err) {
-          console.log(err);
-      } else {
-          console.log("Done, marked email as read!")
-      }
-    });
+
+  markemail(uid,flag){
+    this.imap.addFlags(uid, flag,()=>{});
   }
-
-
 }
